@@ -1,6 +1,6 @@
+#include "mainwindow.h"
 #include "versioninfo.h"
 
-#include <QMainWindow>
 #include <QApplication>
 #include <QErrorMessage>
 #include <QLocale>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         app.installTranslator(&translator);
 
     // Instantiate the main window.
-    QMainWindow mainWindow;
+    MainWindow mainWindow;
     mainWindow.show();
     return app.exec();
 }
