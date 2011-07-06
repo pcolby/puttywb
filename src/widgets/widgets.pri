@@ -1,4 +1,4 @@
 DEPENDPATH += $$PWD
 INCLUDEPATH += $$PWD
-HEADERS += mainwindow.h
-SOURCES += mainwindow.cpp
+HEADERS += mainwindow.h   puttywidget.h
+SOURCES += mainwindow.cpp puttywidget.cpp
