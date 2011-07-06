@@ -32,6 +32,11 @@ void MainWindow::addPuTTY() {
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
 
+    // This will prevent the PuTTY window from being shown on startup, but will break
+    // the SetWindowLongPtr below (probably easy to fix, just haven't yet).
+    //si.wShowWindow = SW_HIDE;
+    //si.dwFlags = STARTF_USESHOWWINDOW;
+
     PROCESS_INFORMATION pi;
     WCHAR cla[1024] = TEXT("putty.exe paul@10.0.0.3");
     CreateProcess(
