@@ -1,15 +1,35 @@
 #include "puttywidget.h"
 
-#include <QWidget>
 #include <QTimer>
+#include <QResizeEvent>
+#include <QWidget>
 
 #include <Windows.h>
 
-PuTTYWidget::PuTTYWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags) {
+PuTTYWidget::PuTTYWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags), puttyWinId(NULL) {
     // TODO: replace this with an appropraite event handler (just need to figure out what the
     // appropraite event would be!
     QTimer::singleShot(0, this, SLOT(foo()));
 }
+
+/* Qt event overrides */
+
+void PuTTYWidget::resizeEvent(QResizeEvent *event) {
+    //QWidget::resizeEvent(event);
+    if (puttyWinId != NULL) {
+        //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
+        //SetParent(puttyWinId, winId());
+
+        SendMessage(puttyWinId, WM_ENTERSIZEMOVE, 0, 0);
+        SetWindowPos(puttyWinId, NULL, 0, 0, event->size().width(), event->size().height(),SWP_NOZORDER);
+        SendMessage(puttyWinId, WM_EXITSIZEMOVE, 0, 0);
+
+        //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
+        //SetParent(puttyWinId, winId());
+    }
+}
+
+/* Private slots */
 
 void PuTTYWidget::foo() {
     // Setup
@@ -50,6 +70,8 @@ void PuTTYWidget::foo() {
         Sleep(50);
     }
 
+    //0x15EF0000);//
     SetWindowLongPtr(hWnd, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
     SetParent(hWnd, winId());
+    puttyWinId = hWnd;
 }
