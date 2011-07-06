@@ -42,33 +42,28 @@ void MainWindow::addPuTTY() {
             NULL, NULL,
             &si, &pi
             );
-    Sleep(1000); // TODO: Replace this with a semi-busy wait / check cycle.
 
-    QDockWidget *dw = new QDockWidget(tr("PuTTY"));
-    dw->setWidget(new QWidget());
     HWND hWnd = NULL;
-    do {
-        hWnd = FindWindowEx (NULL, hWnd, NULL, NULL);
-        if (hWnd != NULL) {
-            //QMessageBox::information(0,tr("found"),tr("pid: %1").arg(GetWindowThreadProcessId(hWnd, NULL)));
+    while (hWnd == NULL) {
+        HWND hEnumWnd = NULL;
+        while ((hEnumWnd = FindWindowEx(NULL, hEnumWnd, NULL, NULL)) != NULL) {
             DWORD pid;
-            DWORD tid = GetWindowThreadProcessId(hWnd, &pid);
+            DWORD tid = GetWindowThreadProcessId(hEnumWnd, &pid);
             if (pid == pi.dwProcessId) {
-                WCHAR title[1024] = TEXT("123");
-                GetWindowText(hWnd, title, 1023);
-                HWND hOldWnd = 0;//= SetParent(hWnd, dw->winId());
+                WCHAR title[1024];
+                GetWindowText(hEnumWnd, title, 1023);
                 if (QString::fromUtf16((const ushort *)title).startsWith(QString::fromLatin1("paul"))) {
-                    SetWindowLongPtr(hWnd, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
-                    HWND hOldWnd = SetParent(hWnd, dw->widget()->winId());
-                    for (HWND w = FindWindowEx(hWnd, NULL, NULL, NULL); w!=NULL; w=FindWindowEx(hWnd,w,NULL,NULL)) {
-                        WCHAR title[1024] = TEXT("123");
-                        GetWindowText(w, title, 1023);
-                        QMessageBox::information(0,tr("found child"),QString::fromUtf16((const ushort *)title));
-                    }
+                    hWnd = hEnumWnd;
                 }
             }
         }
-    } while (hWnd != NULL);
+        Sleep(50);
+    }
+
+    QDockWidget *dw = new QDockWidget(tr("PuTTY"));
+    dw->setWidget(new QWidget());
+    SetWindowLongPtr(hWnd, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
+    SetParent(hWnd, dw->widget()->winId());
 
     addDockWidget(Qt::BottomDockWidgetArea, dw);
 }
