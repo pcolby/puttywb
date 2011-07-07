@@ -12,6 +12,11 @@
 PuttyWidget::PuttyWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags), puttyWinId(NULL) {
     // TODO: replace this with an appropraite event handler (just need to figure out what the
     // appropraite event would be!
+    // Consider:
+    //  1. create putty instance.
+    //  2. try to embed putty instance.
+    //  3. if not found, set single shot to check again later (with timeout, of course).
+    //  ** also check on show event.
     QTimer::singleShot(0, this, SLOT(foo()));
     titleCheckTimerId = startTimer(1000);
     setFocusPolicy(Qt::WheelFocus);
