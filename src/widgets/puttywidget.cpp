@@ -12,6 +12,7 @@ PuttyWidget::PuttyWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(paren
     // appropraite event would be!
     QTimer::singleShot(0, this, SLOT(foo()));
     titleCheckTimerId = startTimer(1000);
+    setFocusPolicy(Qt::WheelFocus);
 }
 
 /* Qt event overrides */
@@ -53,6 +54,7 @@ void PuttyWidget::resizeEvent(QResizeEvent *event) {
 
         //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
         //SetParent(puttyWinId, winId());
+        SetFocus(puttyWinId);
     }
 }
 

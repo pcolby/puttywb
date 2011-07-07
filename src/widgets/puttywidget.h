@@ -14,9 +14,9 @@ class PuttyWidget : public QWidget {
     PuttyWidget(QWidget *parent=0, Qt::WindowFlags flags=0);
 
   protected:
-    void changeEvent(QEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void timerEvent(QTimerEvent * event);
+    virtual void changeEvent(QEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
+    virtual void timerEvent(QTimerEvent * event);
 
   private slots:
     void foo();

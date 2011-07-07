@@ -3,13 +3,14 @@
 
 #include <QDockWidget>
 #include <QMessageBox>
+#include <QTextEdit>
 #include <QTimer>
 
 #include <Windows.h>
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags) {
     // Set our central widget.
-    setCentralWidget(new QWidget());
+    setCentralWidget(new QTextEdit());
 
     // Customise the docking behaviour.
     setDockOptions(QMainWindow::AnimatedDocks|QMainWindow::AllowNestedDocks|
@@ -31,6 +32,7 @@ void MainWindow::addPuTTY() {
     PuttyWidget *putty = new PuttyWidget();
     QDockWidget *dw = new QDockWidget(tr("PuTTY"));
     dw->setWidget(putty);
+    dw->setFocusPolicy(Qt::WheelFocus);
     connect(putty, SIGNAL(windowTitleChanged(QString)), dw, SLOT(setWindowTitle(QString)));
     addDockWidget(Qt::BottomDockWidgetArea, dw);
 }
