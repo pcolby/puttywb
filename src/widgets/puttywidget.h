@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class PuTTYWidget : public QWidget {
+class PuttyWidget : public QWidget {
     Q_OBJECT
 
   private:
@@ -11,7 +11,7 @@ class PuTTYWidget : public QWidget {
     int titleCheckTimerId;
 
   public:
-    PuTTYWidget(QWidget *parent=0, Qt::WindowFlags flags=0);
+    PuttyWidget(QWidget *parent=0, Qt::WindowFlags flags=0);
 
   protected:
     void changeEvent(QEvent *event);

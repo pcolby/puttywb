@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 
 // This is just a temporary (prototype) function - this code will be moved to a dedicted widget class later.
 void MainWindow::addPuTTY() {
-    PuTTYWidget *putty = new PuTTYWidget();
+    PuttyWidget *putty = new PuttyWidget();
     QDockWidget *dw = new QDockWidget(tr("PuTTY"));
     dw->setWidget(putty);
     connect(putty, SIGNAL(windowTitleChanged(QString)), dw, SLOT(setWindowTitle(QString)));

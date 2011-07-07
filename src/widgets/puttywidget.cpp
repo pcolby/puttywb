@@ -1,4 +1,4 @@
-#include "puttywidget.h"
+#include "PuttyWidget.h"
 
 #include <QMessageBox>
 #include <QTimer>
@@ -7,7 +7,7 @@
 
 #include <Windows.h>
 
-PuTTYWidget::PuTTYWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags), puttyWinId(NULL) {
+PuttyWidget::PuttyWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags), puttyWinId(NULL) {
     // TODO: replace this with an appropraite event handler (just need to figure out what the
     // appropraite event would be!
     QTimer::singleShot(0, this, SLOT(foo()));
@@ -16,14 +16,14 @@ PuTTYWidget::PuTTYWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(paren
 
 /* Qt event overrides */
 
-void PuTTYWidget::changeEvent(QEvent *event) {
+void PuttyWidget::changeEvent(QEvent *event) {
     QWidget::changeEvent(event);
     if (event->type() == QEvent::WindowTitleChange) {
         emit windowTitleChanged(windowTitle());
     }
 }
 
-void PuTTYWidget::resizeEvent(QResizeEvent *event) {
+void PuttyWidget::resizeEvent(QResizeEvent *event) {
     //QWidget::resizeEvent(event);
     if (puttyWinId != NULL) {
         //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
@@ -56,7 +56,7 @@ void PuTTYWidget::resizeEvent(QResizeEvent *event) {
     }
 }
 
-void PuTTYWidget::timerEvent(QTimerEvent * event) {
+void PuttyWidget::timerEvent(QTimerEvent * event) {
     if (event->timerId() == titleCheckTimerId) {
         if (puttyWinId != NULL) {
             TCHAR title[1024];
@@ -68,7 +68,7 @@ void PuTTYWidget::timerEvent(QTimerEvent * event) {
 
 /* Private slots */
 
-void PuTTYWidget::foo() {
+void PuttyWidget::foo() {
     // Setup
     STARTUPINFO si;
     ZeroMemory(&si, sizeof(si));
