@@ -25,14 +25,8 @@ void PuttyWidget::changeEvent(QEvent *event) {
 }
 
 void PuttyWidget::resizeEvent(QResizeEvent *event) {
-    //QWidget::resizeEvent(event);
+    QWidget::resizeEvent(event);
     if (puttyWinId != NULL) {
-        //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
-        //SetParent(puttyWinId, winId());
-        //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
-
-        // WINDOW.C
-        //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
 
         RECT r;
 //        GetWindowRect(puttyWinId, &r);
@@ -45,15 +39,9 @@ void PuttyWidget::resizeEvent(QResizeEvent *event) {
 
         SendMessage(puttyWinId, WM_ENTERSIZEMOVE, 0, 0);
         SetWindowPos(puttyWinId, NULL, -8, -30, event->size().width()+8+8, event->size().height()+30+8,SWP_NOZORDER);
-        //SetWindowPos(puttyWinId, NULL, r.left, r.top, 100,100, SWP_NOZORDER);//event->size().width()+8+8, event->size().height()+30+8,SWP_NOZORDER);
-        //SendMessage(puttyWinId, WM_SIZE, 0, MAKEWORD(100, 100));
-        //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
-        //SendMessage(puttyWinId, WM_SIZE, SIZE_MAXIMIZED, MAKEWORD(100, 100));
         SendMessage(puttyWinId, WM_EXITSIZEMOVE, 0, 0);
         SendMessage(puttyWinId, 0x0180, 0, 0);
 
-        //SetWindowLongPtr(puttyWinId, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
-        //SetParent(puttyWinId, winId());
         SetFocus(puttyWinId);
     }
 }
