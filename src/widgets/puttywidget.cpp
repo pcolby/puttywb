@@ -7,6 +7,8 @@
 
 #include <Windows.h>
 
+#define PUTTY_WINDOW_BORDER 1 ///< Number of pixels to leave visible around embedded PuTTY windows.
+
 PuttyWidget::PuttyWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags), puttyWinId(NULL) {
     // TODO: replace this with an appropraite event handler (just need to figure out what the
     // appropraite event would be!
@@ -27,22 +29,24 @@ void PuttyWidget::changeEvent(QEvent *event) {
 void PuttyWidget::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     if (puttyWinId != NULL) {
+        // Figure out the PuTTY window adornment dimensions.
+        RECT rect;
+        GetWindowRect(puttyWinId, &rect);
+        POINT topLeft;
+        topLeft.x = rect.left;
+        topLeft.y = rect.top;
+        ScreenToClient(puttyWinId, &topLeft);
 
-        RECT r;
-//        GetWindowRect(puttyWinId, &r);
-        GetClientRect(puttyWinId, &r);
-        //AdjustWindowRect();
-//        ClientToParent();
-
-        //QMessageBox::information(0, tr("blah"), tr("%1 %2 %3 %4").arg(r.left).arg(r.top).arg(r.right).arg(r.bottom));
-
-
+        // Resize the PuTTY window to fit this widget.
         SendMessage(puttyWinId, WM_ENTERSIZEMOVE, 0, 0);
-        SetWindowPos(puttyWinId, NULL, -8, -30, event->size().width()+8+8, event->size().height()+30+8,SWP_NOZORDER);
+        SetWindowPos(puttyWinId, NULL,
+                     topLeft.x + PUTTY_WINDOW_BORDER, topLeft.y + PUTTY_WINDOW_BORDER,
+                     event->size().width() - 2 * ( topLeft.x + PUTTY_WINDOW_BORDER),
+                     event->size().height() - topLeft.y - topLeft.x - ( 2 * PUTTY_WINDOW_BORDER ),
+                     SWP_NOZORDER);
         SendMessage(puttyWinId, WM_EXITSIZEMOVE, 0, 0);
-        SendMessage(puttyWinId, 0x0180, 0, 0);
 
-        SetFocus(puttyWinId);
+        SetFocus(puttyWinId); // TODO: fix up the focus handling (it's pretty broken right now).
     }
 }
 
@@ -82,15 +86,6 @@ void PuttyWidget::foo() {
         }
         Sleep(50);
     }
-
-    //
-    //RECT r;
-    //GetClientRect(hWnd, &r);
-    //POINT p1, p2;
-    //ClientToScreen(hWnd, &p1);
-    //ClientToScreen(hWnd, &p1);
-    //QMessageBox::information(0, tr("blah"), tr("%1 %2 %3 %4 %5 %6").arg(r.left).arg(r.top).arg(r.right).arg(r.bottom)
-      //                       .arg(p1.x).arg(p1.y));
 
     // Adopt the PuTTY window as our own child.
     SetWindowLongPtr(hWnd, GWL_STYLE, WS_CHILD|WS_VISIBLE|WS_VSCROLL);
