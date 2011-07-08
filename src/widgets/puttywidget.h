@@ -17,6 +17,7 @@ class PuttyWidget : public QWidget {
 
   protected:
     virtual void changeEvent(QEvent *event);
+    //virtual void enterEvent(QEvent *event);
     virtual bool event(QEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
@@ -27,6 +28,7 @@ class PuttyWidget : public QWidget {
     void foo();
 
   signals:
+    void puttyClosed();
     void windowTitleChanged(const QString &title);
 };
 

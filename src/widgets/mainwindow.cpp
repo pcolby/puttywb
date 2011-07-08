@@ -26,6 +26,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 
 /* Protected slots */
 
+void MainWindow::removePuttyWidget() {
+    removeDockWidget(static_cast<QDockWidget *>(sender()->parent()));
+}
+
 /* Private functions */
 
 // This is just a temporary (prototype) function - this code will be moved to a dedicted widget class later.
@@ -35,9 +39,9 @@ void MainWindow::addPuTTY(QTextEdit *te) {
     dw->setWidget(putty);
     dw->setFocusPolicy(Qt::WheelFocus);
     dw->setFocusProxy(putty);
+    connect(putty, SIGNAL(puttyClosed()), this, SLOT(removePuttyWidget()));
     connect(putty, SIGNAL(windowTitleChanged(QString)), dw, SLOT(setWindowTitle(QString)));
     addDockWidget(Qt::BottomDockWidgetArea, dw);
-    //addDockWidget(Qt::BottomDockWidgetArea, new PuttyDockWidget());
 }
 
 /* Private slots */

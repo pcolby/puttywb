@@ -32,6 +32,11 @@ void PuttyWidget::changeEvent(QEvent *event) {
     }
 }
 
+// Coming soon...
+/*void PuttyWidget::enterEvent(QEvent *event) {
+    QWidget::enterEvent(event);
+}*/
+
 // TODO: remove this function... it's just here for the early dev stage.
 bool PuttyWidget::event(QEvent *event) {
     te->append(tr("event %1").arg((int)event->type()));
@@ -71,14 +76,23 @@ void PuttyWidget::timerEvent(QTimerEvent * event) {
     if (event->timerId() == titleCheckTimerId) {
         if (puttyWinId != NULL) {
             TCHAR title[1024];
-            GetWindowText(puttyWinId, title, 1023);
+            SetLastError(ERROR_SUCCESS);
+            int length = GetWindowText(puttyWinId, title, 1023);
+            if (length == 0) {
+                const DWORD dwError = GetLastError();
+                te->append(tr("closed? %1").arg(dwError,0,16));
+                if (dwError == ERROR_INVALID_WINDOW_HANDLE) {
+                    puttyWinId = NULL;
+                    emit puttyClosed();
+                }
+            }
             setWindowTitle(QString::fromUtf16((const ushort *)title));
         }
     } else QWidget::timerEvent(event); // Not one of ours.
 }
 
 bool PuttyWidget::winEvent(MSG *message, long *result) {
-    //te->append(tr("win event 0x%1").arg(message->message,0,16));
+    te->append(tr("win event 0x%1").arg(message->message,0,16));
     switch (message->message) {
         case WM_PARENTNOTIFY:
             te->append(tr("win event WM_PARENTNOTIFY %1 %2").arg(message->wParam,0,16).arg(message->lParam,0,16));
