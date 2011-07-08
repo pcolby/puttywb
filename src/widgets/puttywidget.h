@@ -19,14 +19,12 @@ class PuttyWidget : public QWidget {
     virtual void changeEvent(QEvent *event);
     virtual bool event(QEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
-    virtual void mousePressEvent(QMouseEvent * event);
     virtual void resizeEvent(QResizeEvent *event);
     virtual void timerEvent(QTimerEvent * event);
     virtual bool winEvent(MSG *message, long *result);
 
   private slots:
     void foo();
-    void foo2();
 
   signals:
     void windowTitleChanged(const QString &title);
