@@ -18,7 +18,7 @@ PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
     //  3. if not found, set single shot to check again later (with timeout, of course).
     //  ** also check on show event.
     QTimer::singleShot(0, this, SLOT(foo()));
-    titleCheckTimerId = startTimer(1000);
+    titleCheckTimerId = startTimer(100);
     setFocusPolicy(Qt::WheelFocus); // Required for title bar clicks.
 }
 
@@ -39,7 +39,8 @@ void PuttyWidget::changeEvent(QEvent *event) {
 
 // TODO: remove this function... it's just here for the early dev stage.
 bool PuttyWidget::event(QEvent *event) {
-    te->append(tr("event %1").arg((int)event->type()));
+    if (event->type() != QEvent::Timer)
+        te->append(tr("event %1").arg((int)event->type()));
     return QWidget::event(event);
 }
 
