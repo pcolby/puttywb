@@ -1,4 +1,4 @@
-#include "PuttyWidget.h"
+#include "puttywidget.h"
 
 #include <QMessageBox>
 #include <QTimer>
@@ -7,9 +7,9 @@
 
 #include <Windows.h>
 
-#define PUTTY_WINDOW_BORDER 1 ///< Number of pixels to leave visible around embedded PuTTY windows.
-
-PuttyWidget::PuttyWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags), puttyWinId(NULL) {
+PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
+    : QWidget(parent, flags), puttyWinId(NULL), te(te)
+{
     // TODO: replace this with an appropraite event handler (just need to figure out what the
     // appropraite event would be!
     // Consider:
@@ -20,15 +20,44 @@ PuttyWidget::PuttyWidget(QWidget *parent, Qt::WindowFlags flags) : QWidget(paren
     QTimer::singleShot(0, this, SLOT(foo()));
     titleCheckTimerId = startTimer(1000);
     setFocusPolicy(Qt::WheelFocus);
+    this->setEnabled(true);
+    this->setMouseTracking(true);
 }
 
 /* Qt event overrides */
 
 void PuttyWidget::changeEvent(QEvent *event) {
+    te->append(tr("change event"));
     QWidget::changeEvent(event);
     if (event->type() == QEvent::WindowTitleChange) {
         emit windowTitleChanged(windowTitle());
     }
+}
+
+bool PuttyWidget::event(QEvent *event) {
+    te->append(tr("event %1").arg((int)event->type()));
+    return QWidget::event(event);
+}
+
+void PuttyWidget::focusInEvent(QFocusEvent *event) {
+    te->append(tr("focus in event"));
+    QWidget::focusInEvent(event);
+    if (puttyWinId != NULL) {
+        SetForegroundWindow(puttyWinId);
+        SetFocus(puttyWinId);
+        QTimer::singleShot(0, this, SLOT(foo2()));
+    }
+}
+
+void PuttyWidget::foo2() {
+    SetForegroundWindow(puttyWinId);
+    SetFocus(puttyWinId);
+}
+
+void PuttyWidget::mousePressEvent(QMouseEvent * event) {
+    te->append(tr("change event"));
+    QWidget::mousePressEvent(event);
+    QMessageBox::information(0, tr("puttywidget"), tr("mouse press"));
 }
 
 void PuttyWidget::resizeEvent(QResizeEvent *event) {
@@ -44,11 +73,8 @@ void PuttyWidget::resizeEvent(QResizeEvent *event) {
 
         // Resize the PuTTY window to fit this widget.
         SendMessage(puttyWinId, WM_ENTERSIZEMOVE, 0, 0);
-        SetWindowPos(puttyWinId, NULL,
-                     topLeft.x + PUTTY_WINDOW_BORDER, topLeft.y + PUTTY_WINDOW_BORDER,
-                     event->size().width() - 2 * ( topLeft.x + PUTTY_WINDOW_BORDER),
-                     event->size().height() - topLeft.y - topLeft.x - ( 2 * PUTTY_WINDOW_BORDER ),
-                     SWP_NOZORDER);
+        SetWindowPos(puttyWinId, NULL, topLeft.x, topLeft.y, event->size().width() - ( 2 * topLeft.x),
+                     event->size().height() - topLeft.y - topLeft.x, SWP_NOZORDER);
         SendMessage(puttyWinId, WM_EXITSIZEMOVE, 0, 0);
 
         SetFocus(puttyWinId); // TODO: fix up the focus handling (it's pretty broken right now).
@@ -63,6 +89,24 @@ void PuttyWidget::timerEvent(QTimerEvent * event) {
             setWindowTitle(QString::fromUtf16((const ushort *)title));
         }
     } else QWidget::timerEvent(event); // Not one of ours.
+}
+
+bool PuttyWidget::winEvent(MSG *message, long *result) {
+    //te->append(tr("win event 0x%1").arg(message->message,0,16));
+    switch (message->message) {
+        case WM_PARENTNOTIFY:
+            te->append(tr("win event WM_PARENTNOTIFY %1 %2").arg(message->wParam,0,16).arg(message->lParam,0,16));
+            break;
+        case WM_MOUSEACTIVATE:
+            if (puttyWinId != NULL) {
+                SetForegroundWindow(puttyWinId);
+                SetFocus(puttyWinId);
+                *result = MA_ACTIVATE;
+                return false;
+            }
+            break;
+    }
+    return QWidget::winEvent(message, result);
 }
 
 /* Private slots */
@@ -82,6 +126,7 @@ void PuttyWidget::foo() {
     WCHAR cla[1024] = TEXT("putty.exe paul@10.0.0.3");
     CreateProcess(TEXT("C:\\Program Files (x86)\\PuTTY\\putty.exe"),cla,NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 
+    Sleep(1000);
     HWND hWnd = NULL;
     while (hWnd == NULL) {
         HWND hEnumWnd = NULL;
@@ -89,7 +134,8 @@ void PuttyWidget::foo() {
             if (GetWindowThreadProcessId(hEnumWnd, NULL) == pi.dwThreadId)
                 hWnd = hEnumWnd;
         }
-        Sleep(50);
+        if (hWnd == NULL)
+            Sleep(50);
     }
 
     // Adopt the PuTTY window as our own child.
