@@ -14,6 +14,7 @@ class MainWindow : public QMainWindow {
     virtual void closeEvent(QCloseEvent *event);
 
   protected slots:
+    virtual void about();
     virtual void removePuttyWidget();
 
   private:

@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QDockWidget>
+#include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
 #include <QTextEdit>
@@ -21,6 +22,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
     QRegExp versionMatch(QLatin1String(VERSION_STRING_REGEX));
     const QString versionStr=(QApplication::applicationVersion().contains(versionMatch)) ? versionMatch.cap(1) : QString::null;
     setWindowTitle(tr("%1 %2").arg(QApplication::applicationName()).arg(versionStr));
+
+    // Add the main menu.
+    QMenu *profileMenu=menuBar()->addMenu(tr("&Tools"));
+    profileMenu->addAction(tr("&Options..."))->setEnabled(false); // Not implemented yet.
+    QMenu *helpMenu=menuBar()->addMenu(tr("&Help"));
+    helpMenu->addAction(tr("&Check for updates..."))->setEnabled(false); // Not implemented yet.
+    QAction *aboutAction=helpMenu->addAction(tr("&About %1...").arg(QApplication::applicationName()));
+    connect(aboutAction,SIGNAL(triggered()),this,SLOT(about()));
 
     // Set our central widget.
     QTextEdit *te = new QTextEdit();
@@ -51,6 +60,12 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 /* Protected slots */
+
+void MainWindow::about() {
+    // Just a placeholder "About" dialog for now.
+    QMessageBox::about(this,tr("About %1").arg(QApplication::applicationName()),
+                       tr("%1 %2").arg(QApplication::applicationName()).arg(QApplication::applicationVersion()));
+}
 
 void MainWindow::removePuttyWidget() {
     removeDockWidget(static_cast<QDockWidget *>(sender()->parent()));
