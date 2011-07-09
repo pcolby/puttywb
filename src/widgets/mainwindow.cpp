@@ -4,16 +4,17 @@
 #include <QApplication>
 #include <QDockWidget>
 #include <QMessageBox>
+#include <QSettings>
 #include <QTextEdit>
 #include <QTimer>
-
-#include <Windows.h>
 
 #ifdef DEBUG
 #define VERSION_STRING_REGEX "([^.]+\\.[^.]+\\.[^.]+\\.[^.]+)"
 #else
 #define VERSION_STRING_REGEX "([^.]+\\.[^.]+\\.[^.]+)\\."
 #endif // DEBUG
+
+#define SETTINGS_GEOMETRY QLatin1String("geometry")
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags) {
     // Set the main window title.
@@ -32,9 +33,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
     // Add a couple of dummy PuTTY instances for initial prototyping.
     addPuTTY(te);
     addPuTTY(te);
+
+    // Restore the window's previous size and position.
+    QSettings settings;
+    QVariant geometry=settings.value(SETTINGS_GEOMETRY);
+    if (geometry.isValid()) restoreGeometry(geometry.toByteArray());
+    else setGeometry(40,40,800,550); // Default to 800x550, at position (40,40).
 }
 
 /* Qt event overrides */
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    // Save the window's current size and position.
+    QSettings settings;
+    settings.setValue(SETTINGS_GEOMETRY,saveGeometry());
+    QMainWindow::closeEvent(event);
+}
 
 /* Protected slots */
 

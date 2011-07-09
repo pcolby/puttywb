@@ -10,6 +10,9 @@ class MainWindow : public QMainWindow {
   public:
     MainWindow(QWidget *parent=0, Qt::WindowFlags flags=0);
 
+  protected:
+    virtual void closeEvent(QCloseEvent *event);
+
   protected slots:
     virtual void removePuttyWidget();
 
