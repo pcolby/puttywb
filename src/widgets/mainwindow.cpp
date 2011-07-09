@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "puttywidget.h"
 
+#include <QApplication>
 #include <QDockWidget>
 #include <QMessageBox>
 #include <QTextEdit>
@@ -8,7 +9,18 @@
 
 #include <Windows.h>
 
+#ifdef DEBUG
+#define VERSION_STRING_REGEX "([^.]+\\.[^.]+\\.[^.]+\\.[^.]+)"
+#else
+#define VERSION_STRING_REGEX "([^.]+\\.[^.]+\\.[^.]+)\\."
+#endif // DEBUG
+
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags) {
+    // Set the main window title.
+    QRegExp versionMatch(QLatin1String(VERSION_STRING_REGEX));
+    const QString versionStr=(QApplication::applicationVersion().contains(versionMatch)) ? versionMatch.cap(1) : QString::null;
+    setWindowTitle(tr("%1 %2").arg(QApplication::applicationName()).arg(versionStr));
+
     // Set our central widget.
     QTextEdit *te = new QTextEdit();
     setCentralWidget(te);
