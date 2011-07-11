@@ -7,6 +7,16 @@
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
+  private:
+    struct Menus {
+        QMenu *tools, *help;
+    } menus;
+
+    struct Actions {
+        QAction *options;
+        QAction *updates, *about;
+    } actions;
+
   public:
     MainWindow(QWidget *parent=0, Qt::WindowFlags flags=0);
 
@@ -19,6 +29,8 @@ class MainWindow : public QMainWindow {
 
   private:
     void addPuTTY(QTextEdit *te);
+    void createActions();
+    void createMenus();
 };
 
 #endif // __MAIN_WINDOW_H__
