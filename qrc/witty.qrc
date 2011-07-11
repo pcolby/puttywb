@@ -1,2 +1,6 @@
-<RCC>
-</RCC>
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource>
+     <file>html/about.html</file>
+  </qresource>
+ </RCC>

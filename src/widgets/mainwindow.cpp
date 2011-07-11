@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QDockWidget>
+#include <QFile>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
@@ -23,13 +24,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
     const QString versionStr=(QApplication::applicationVersion().contains(versionMatch)) ? versionMatch.cap(1) : QString::null;
     setWindowTitle(tr("%1 %2").arg(QApplication::applicationName()).arg(versionStr));
 
-    // Add the main menu.
-    QMenu *profileMenu=menuBar()->addMenu(tr("&Tools"));
-    profileMenu->addAction(tr("&Options..."))->setEnabled(false); // Not implemented yet.
-    QMenu *helpMenu=menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(tr("&Check for updates..."))->setEnabled(false); // Not implemented yet.
-    QAction *aboutAction=helpMenu->addAction(tr("&About %1...").arg(QApplication::applicationName()));
-    connect(aboutAction,SIGNAL(triggered()),this,SLOT(about()));
+    createActions();
+    createMenus();
 
     // Set our central widget.
     QTextEdit *te = new QTextEdit();
@@ -40,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
                    QMainWindow::AllowTabbedDocks|QMainWindow::VerticalTabs);
 
     // Add a couple of dummy PuTTY instances for initial prototyping.
+    foreach (const QString &path, QIcon::themeSearchPaths()) {
+        te->append(path);
+    }
     addPuTTY(te);
     addPuTTY(te);
 
@@ -63,8 +62,10 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::about() {
     // Just a placeholder "About" dialog for now.
+    QFile file(QLatin1String(":/html/about.html"));
+    file.open(QFile::ReadOnly);
     QMessageBox::about(this,tr("About %1").arg(QApplication::applicationName()),
-                       tr("%1 %2").arg(QApplication::applicationName()).arg(QApplication::applicationVersion()));
+                       QString::fromUtf8(file.readAll()).arg(QApplication::applicationName()).arg(QApplication::applicationVersion()));
 }
 
 void MainWindow::removePuttyWidget() {
@@ -72,6 +73,28 @@ void MainWindow::removePuttyWidget() {
 }
 
 /* Private functions */
+
+void MainWindow::createActions() {
+    actions.about = new QAction(tr("&About %1...").arg(QApplication::applicationName()), this);
+    actions.about->setIcon(QIcon(QLatin1String(":icons/help-about.png")));
+    actions.about->setStatusTip(tr("Show the application's About box"));
+    connect(actions.about, SIGNAL(triggered()), this, SLOT(about()));
+
+    actions.options = new QAction(tr("&Options..."), this);
+    actions.options->setEnabled(false); // Not implemented yet.
+
+    actions.updates = new QAction(tr("&Check for updates..."), this);
+    actions.updates->setEnabled(false); // Not implemented yet.
+}
+
+void MainWindow::createMenus() {
+    menus.tools = menuBar()->addMenu(tr("&Tools"));
+    menus.tools->addAction(actions.options);
+
+    menus.help = menuBar()->addMenu(tr("&Help"));
+    menus.help->addAction(actions.updates);
+    menus.help->addAction(actions.about);
+}
 
 // This is just a temporary (prototype) function - this code will be moved to a dedicted widget class later.
 void MainWindow::addPuTTY(QTextEdit *te) {
