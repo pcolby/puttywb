@@ -1,6 +1,8 @@
 #ifndef __PUTTY_WIDGET_H__
 #define __PUTTY_WIDGET_H__
 
+#include "abstractputtyinstance.h"
+
 #include <QWidget>
 #include <QTextEdit>
 
@@ -8,7 +10,7 @@ class PuttyWidget : public QWidget {
     Q_OBJECT
 
   private:
-    WId puttyWinId;
+    AbstractPuttyInstance *putty;
     int titleCheckTimerId;
     QTextEdit *te;
 
@@ -24,8 +26,9 @@ class PuttyWidget : public QWidget {
     virtual void timerEvent(QTimerEvent * event);
     virtual bool winEvent(MSG *message, long *result);
 
-  private slots:
-    void foo();
+  protected slots:
+    void checkIfPuttyIsClosed();
+    void adoptPuttyWindow();
 
   signals:
     void puttyClosed();
