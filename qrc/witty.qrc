@@ -2,5 +2,20 @@
 <RCC version="1.0">
   <qresource>
      <file>html/about.html</file>
+	 <file>icons/oxygen/index.theme</file>
+	 <file>icons/oxygen/16x16/actions/configure.png</file>
+	 <file>icons/oxygen/22x22/actions/configure.png</file>
+	 <file>icons/oxygen/32x32/actions/configure.png</file>
+	 <file>icons/oxygen/48x48/actions/configure.png</file>
+	 <file>icons/oxygen/64x64/actions/configure.png</file>
+	 <file>icons/oxygen/128x128/actions/configure.png</file>
+	 <file>icons/oxygen/16x16/actions/download.png</file>
+	 <file>icons/oxygen/22x22/actions/download.png</file>
+	 <file>icons/oxygen/32x32/actions/download.png</file>
+	 <file>icons/oxygen/48x48/actions/download.png</file>
+	 <file>icons/oxygen/16x16/actions/help-about.png</file>
+	 <file>icons/oxygen/22x22/actions/help-about.png</file>
+	 <file>icons/oxygen/32x32/actions/help-about.png</file>
+	 <file>icons/oxygen/48x48/actions/help-about.png</file>
   </qresource>
  </RCC>

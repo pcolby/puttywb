@@ -32,6 +32,9 @@ int main(int argc, char *argv[]) {
     if (translator.load(QLocale::system().name(),app.applicationDirPath()+QLatin1String("/../i18n")))
         app.installTranslator(&translator);
 
+    // Set the icon theme.
+    QIcon::setThemeName(QLatin1String("oxygen"));
+
     // Instantiate the main window.
     MainWindow mainWindow;
     mainWindow.show();

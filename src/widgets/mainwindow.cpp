@@ -76,22 +76,32 @@ void MainWindow::removePuttyWidget() {
 
 void MainWindow::createActions() {
     actions.about = new QAction(tr("&About %1...").arg(QApplication::applicationName()), this);
-    actions.about->setIcon(QIcon(QLatin1String(":icons/help-about.png")));
+    actions.about->setIcon(QIcon::fromTheme(QLatin1String("help-about")));
     actions.about->setStatusTip(tr("Show the application's About box"));
     connect(actions.about, SIGNAL(triggered()), this, SLOT(about()));
 
     actions.options = new QAction(tr("&Options..."), this);
+    actions.options->setIcon(QIcon::fromTheme(QLatin1String("configure")));
     actions.options->setEnabled(false); // Not implemented yet.
 
     actions.updates = new QAction(tr("&Check for updates..."), this);
+    actions.updates->setIcon(QIcon::fromTheme(QLatin1String("download")));
     actions.updates->setEnabled(false); // Not implemented yet.
 }
 
 void MainWindow::createMenus() {
+    menus.tools = menuBar()->addMenu(tr("&View"));
+    // menu, toolbars, full-screen, putty sessions.
+
+    menus.tools = menuBar()->addMenu(tr("&Session"));
+    // new, open docked, open floating, open detached, configure, close, close all, exit
+
     menus.tools = menuBar()->addMenu(tr("&Tools"));
+    // putty configuration
     menus.tools->addAction(actions.options);
 
     menus.help = menuBar()->addMenu(tr("&Help"));
+    // homepage, help (online)
     menus.help->addAction(actions.updates);
     menus.help->addAction(actions.about);
 }
