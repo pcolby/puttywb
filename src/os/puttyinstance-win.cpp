@@ -157,3 +157,33 @@ QString PuttyInstance::windowTitle() {
     delete buffer;
     return title;
 }
+
+int PuttyInstance::lastError() {
+    return error;
+}
+
+QString PuttyInstance::lastErrorMessage() {
+    return errorMessage(error);
+}
+
+QString PuttyInstance::errorMessage(const DWORD error) {
+    // Get the error message.
+    LPTSTR buffer=NULL; // FormatMessage will allocate the buffer.
+    const DWORD length = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_ARGUMENT_ARRAY,
+                                       NULL, error, LANG_NEUTRAL, (LPTSTR)&buffer, 0, NULL);
+
+    // Convert the message to QString.
+    QString message;
+    if ((buffer != NULL) && (length > 0)) {
+        #ifdef UNICODE
+        message = QString::fromUtf16((const ushort *)buffer, length);
+        #else
+        message = QString::fromLocal8Bit((const char *)buffer, length);
+        #endif
+    }
+
+    // Free the buffer allocated by FormatMessage.
+    if (buffer!=NULL)
+        LocalFree((HLOCAL)buffer);
+    return message.trimmed();
+}

@@ -19,6 +19,9 @@ class AbstractPuttyInstance {
         virtual bool setFocus() = 0;
 
         virtual QString windowTitle() = 0;
+
+        virtual int lastError() = 0;
+        virtual QString lastErrorMessage() = 0;
 };
 
 #endif // __ABSTRACT_PUTTY_INSTANCE_H__

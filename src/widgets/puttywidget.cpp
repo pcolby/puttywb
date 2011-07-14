@@ -20,7 +20,11 @@ PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
     putty = new PuttyInstance(tr("C:\\Program Files (x86)\\PuTTY\\putty.exe"),
                               tr("putty.exe -P 2022 paul@localhost"));
     if (putty->isNull()) {
-        // Failed to create, so show an error.
+        QMessageBox messageBox(QMessageBox::Critical, tr("Error"), tr("Failed to create new PuTTY process."));
+        messageBox.setDetailedText(tr("Error: 0x%1\n\nMessage: %2\n\nCommand: %3")
+                                   .arg(putty->lastError(),0,16).arg(putty->lastErrorMessage())
+                                   .arg(tr("filename / command line args go here...")));
+        messageBox.exec();
     } else {
         // Try to adopt the PuTTY instance's window.
         adoptPuttyWindow(); // Will schedule it's own retry if it fails.

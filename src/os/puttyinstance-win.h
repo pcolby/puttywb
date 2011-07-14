@@ -28,6 +28,12 @@ class PuttyInstance : public AbstractPuttyInstance {
         virtual bool setFocus();
 
         virtual QString windowTitle();
+
+        virtual int lastError();
+        virtual QString lastErrorMessage();
+
+    protected:
+        static QString errorMessage(const DWORD error);
 };
 
 #endif // __PUTTY_INSTANCE_H__
