@@ -3,12 +3,12 @@
 #include "puttyinstance.h"
 
 #include <QMessageBox>
+#include <QTime>
 #include <QTimer>
 #include <QResizeEvent>
 #include <QWidget>
 
-// TODO: apply this.
-#define MAX_ADOPTIONAL_TIME 1000 ///< Maximum time to spend trying to adopt the PuTTY window.
+#define MAX_ADOPTIONAL_TIME  2500 ///< Maximum time to spend trying to adopt the PuTTY window.
 
 #define TITLE_CHECK_INTERVAL 100 ///< Milliseconds between PuTTY title checks.
 
@@ -100,13 +100,21 @@ void PuttyWidget::checkIfPuttyIsClosed() {
 }
 
 void PuttyWidget::adoptPuttyWindow() {
+    // Start a timer, to make sure we don't try forever.
+    static QTime timer;
+    if (timer.isNull())
+        timer.start();
+
     // Try to adopt the PuTTY instance's window.
     if (putty->adopt(this)) {
         putty->resize(size());
         setWindowTitle(putty->windowTitle());
         titleCheckTimerId = startTimer(TITLE_CHECK_INTERVAL);
-    } else {
-        // If not, try again later.
+    } else if (timer.elapsed() < MAX_ADOPTIONAL_TIME) {
+        // If adoption failed, try again later.
         QTimer::singleShot(0, this, SLOT(adoptPuttyWindow()));
+    } else {
+        // Adoption failed, and time is up :(
+        QMessageBox::critical(this, tr("Error"), tr("Failed to adopt the created PuTTY instance."));
     }
 }
