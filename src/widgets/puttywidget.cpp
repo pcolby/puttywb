@@ -10,7 +10,7 @@
 
 #define MAX_ADOPTIONAL_TIME  2500 ///< Maximum time to spend trying to adopt the PuTTY window.
 
-#define TITLE_CHECK_INTERVAL 100 ///< Milliseconds between PuTTY title checks.
+#define TITLE_CHECK_INTERVAL  100 ///< Milliseconds between PuTTY title checks.
 
 PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
     : QWidget(parent, flags), putty(NULL), titleCheckTimerId(0), te(te)
