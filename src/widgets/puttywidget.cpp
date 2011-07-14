@@ -12,9 +12,6 @@
 
 #define TITLE_CHECK_INTERVAL 100 ///< Milliseconds between PuTTY title checks.
 
-// TODO: rename titleCheckTimerId?
-// TODO: add updateWindowTitle slot?
-
 PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
     : QWidget(parent, flags), putty(NULL), titleCheckTimerId(0), te(te)
 {
@@ -70,13 +67,9 @@ void PuttyWidget::resizeEvent(QResizeEvent *event) {
 }
 
 void PuttyWidget::timerEvent(QTimerEvent * event) {
-    if (event->timerId() == titleCheckTimerId) {
-        const QString title = putty->windowTitle();
-        if (title.isEmpty())
-            checkIfPuttyIsClosed();
-        if (windowTitle() != title)
-            setWindowTitle(title);
-    } else QWidget::timerEvent(event); // Not one of ours.
+    if (event->timerId() == titleCheckTimerId)
+        setWindowTitle(putty->windowTitle());
+    else QWidget::timerEvent(event); // Not one of ours.
 }
 
 bool PuttyWidget::winEvent(MSG *message, long *result) {
