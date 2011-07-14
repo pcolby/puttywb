@@ -13,11 +13,10 @@
 #define TITLE_CHECK_INTERVAL 100 ///< Milliseconds between PuTTY title checks.
 
 // TODO: is -1 an appropraite init value for titleCheckTimerId?
-// TODO: rename titleCheckTimerId?
 // TODO: add updateWindowTitle slot?
 
 PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
-    : QWidget(parent, flags), putty(NULL), titleCheckTimerId(-1), te(te)
+    : QWidget(parent, flags), putty(NULL), titleCheckTimerId(0), te(te)
 {
     // Create a new PuTTY instance.
     // TODO: Remove these hard-coded values sometime.
@@ -31,7 +30,7 @@ PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
     }
 
     // Set this widget's focus policy (required to receive title bar clicks).
-    setFocusPolicy(Qt::WheelFocus); // Qt::WheelFocus is all-encompassing. // TODO: check spelling.
+    setFocusPolicy(Qt::WheelFocus); // Qt::WheelFocus is all-encompassing.
 }
 
 /* Qt event overrides */
