@@ -12,7 +12,7 @@
 
 #define TITLE_CHECK_INTERVAL 100 ///< Milliseconds between PuTTY title checks.
 
-// TODO: is -1 an appropraite init value for titleCheckTimerId?
+// TODO: rename titleCheckTimerId?
 // TODO: add updateWindowTitle slot?
 
 PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
