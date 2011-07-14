@@ -17,14 +17,13 @@ PuttyInstance::PuttyInstance(const QString &command, const QString &arguments)
 
 
     // Create a new PuTTY process.
-
 #ifdef UNICODE
     LPTSTR args = _wcsdup(arguments.toStdWString().c_str());
     const BOOL result = CreateProcess(command.toStdWString().c_str(), args
 #else
     const BOOL result = CreateProcess(command.toAscii(),arguments.toAscii()
 #endif
-            ,NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo);
+        ,NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo);
     if (!result) {
         error = GetLastError();
         return;
@@ -56,10 +55,6 @@ bool PuttyInstance::findWindow() {
 bool PuttyInstance::isWindowClosed() {
     return ((windowHandle != NULL) && (error == ERROR_INVALID_WINDOW_HANDLE));
 }
-
-/*WId PuttyInstance::windowId() {
-    return windowHandle;
-}*/
 
 bool PuttyInstance::adopt(QWidget *parent) {
     if (isNull()) return false;
@@ -109,33 +104,29 @@ bool PuttyInstance::disown() {
     return true;
 }
 
-bool PuttyInstance::resize(const QSize &size) {
-    if (windowHandle != NULL) {
-        // Figure out the PuTTY window adornment dimensions.
-        RECT rect;
-        GetWindowRect(windowHandle, &rect);
-        POINT topLeft;
-        topLeft.x = rect.left;
-        topLeft.y = rect.top;
-        ScreenToClient(windowHandle, &topLeft);
+#include <QMessageBox>
 
-        // Resize the PuTTY window to fit this widget.
-        // TODO: error checking.
-        SendMessage(windowHandle, WM_ENTERSIZEMOVE, 0, 0);
-        SetWindowPos(windowHandle, NULL, topLeft.x, topLeft.y, size.width() - ( 2 * topLeft.x),
-                     size.height() - topLeft.y - topLeft.x, SWP_NOZORDER);
-        SendMessage(windowHandle, WM_EXITSIZEMOVE, 0, 0);
-    }
-    return true;
+bool PuttyInstance::resize(const QSize &size) {
+    if (windowHandle == NULL)
+        return false;
+
+    // Figure out the PuTTY window adornment dimensions.
+    RECT rect;
+    GetWindowRect(windowHandle, &rect);
+    POINT topLeft;
+    topLeft.x = rect.left;
+    topLeft.y = rect.top;
+    ScreenToClient(windowHandle, &topLeft);
+
+    // Resize the PuTTY window.
+    return ((SendMessage(windowHandle, WM_ENTERSIZEMOVE, 0, 0) == 0) &&
+            (SetWindowPos(windowHandle, NULL, topLeft.x, topLeft.y, size.width() - ( 2 * topLeft.x),
+                          size.height() - topLeft.y - topLeft.x, SWP_NOZORDER)) &&
+            (SendMessage(windowHandle, WM_EXITSIZEMOVE, 0, 0) == 0));
 }
 
 bool PuttyInstance::setFocus() {
-    // TODO: errror handling.
-    if (windowHandle != NULL) {
-        SetForegroundWindow(windowHandle);
-        SetFocus(windowHandle);
-    }
-    return true;
+    return ((windowHandle != NULL) && (SetFocus(windowHandle) != NULL));
 }
 
 QString PuttyInstance::windowTitle() {
@@ -159,7 +150,7 @@ QString PuttyInstance::windowTitle() {
         #ifdef UNICODE
         title = QString::fromUtf16((const ushort *)buffer, length);
         #else
-        title = QString::fromLocal8Bit((const ushort *)buffer, length);
+        title = QString::fromLocal8Bit((const char *)buffer, length);
         #endif
     }
 
