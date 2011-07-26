@@ -1,5 +1,5 @@
-# Make an application called WiTTY.
-TARGET = WiTTY
+# Make an application called puttywb.
+TARGET = puttywb
 TEMPLATE = app
 
 # Disable automatic ASCII conversions (best practice, especially for i18n support).
@@ -9,8 +9,8 @@ DEFINES += QT_NO_CAST_FROM_ASCII QT_NO_CAST_TO_ASCII
 CONFIG(debug,debug|release):DEFINES+=DEBUG
 
 # Set the dependancies.
-RESOURCES = qrc/witty.qrc
-win32:RC_FILE=qrc/witty.rc
+RESOURCES = qrc/puttywb.qrc
+win32:RC_FILE=qrc/puttywb.rc
 include(src/src.pri)
 
 # Neaten the output directories.
@@ -26,7 +26,7 @@ CONFIG(release,debug|release) {
 }
 
 # Create our custom svnbuild target.
-win32:svnbuild.commands = utils\\svnversion.cmd . qrc\\witty.rc_ qrc\\witty.rc
+win32:svnbuild.commands = utils\\svnversion.cmd . qrc\\puttywb.rc_ qrc\\puttywb.rc
 QMAKE_EXTRA_TARGETS += svnbuild
 
 # Hook our svnbuild target in between qmake's Makefile update and the actual project target.
