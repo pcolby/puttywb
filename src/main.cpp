@@ -6,6 +6,10 @@
 #include <QLocale>
 #include <QTranslator>
 
+/// @todo: Add svn Id's to everything.
+/// @todo: Add GPL license to everything.
+/// @todo: Add Qt and Oxygen-icons credits.
+
 #ifdef DEBUG
   #include <QMessageBox>
   void msgHandler(QtMsgType type, const char *msg);
