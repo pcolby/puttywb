@@ -15,9 +15,9 @@
   void msgHandler(QtMsgType type, const char *msg);
 #endif // DEBUG
 
-#define APPLICATION_NAME    QString::fromAscii("WiTTY")             // Note, these values are used by the
-#define ORGANISATION_NAME   QString::fromAscii("Paul Colby")        // QSettings default constructor, so
-#define ORGANISATION_DOMAIN QString::fromAscii("witty.colby.id.au") // should not change between versions.
+#define APPLICATION_NAME    QString::fromAscii("PuTTY Workbench")     // Note, these values are used by the
+#define ORGANISATION_NAME   QString::fromAscii("Paul Colby")          // QSettings default constructor, so
+#define ORGANISATION_DOMAIN QString::fromAscii("puttywb.colby.id.au") // should not change between versions.
 
 int main(int argc, char *argv[]) {
     // Setup the primary Qt application object.
