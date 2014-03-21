@@ -25,15 +25,15 @@ CONFIG(release,debug|release) {
   RCC_DIR = release/tmp
 }
 
-# Create our custom svnbuild target.
-win32:svnbuild.commands = utils\\svnversion.cmd . qrc\\puttywb.rc_ qrc\\puttywb.rc
-QMAKE_EXTRA_TARGETS += svnbuild
+# Create our custom revbuild target.
+win32:revbuild.commands = utils\\gitversion.cmd qrc\\puttywb.rc_ qrc\\puttywb.rc
+QMAKE_EXTRA_TARGETS += revbuild
 
-# Hook our svnbuild target in between qmake's Makefile update and the actual project target.
-svnbuildhook.depends = svnbuild
-CONFIG(debug,debug|release):svnbuildhook.target = Makefile.Debug
-CONFIG(release,debug|release):svnbuildhook.target = Makefile.Release
-QMAKE_EXTRA_TARGETS += svnbuildhook
+# Hook our revbuild target in between qmake's Makefile update and the actual project target.
+revbuildhook.depends = revbuild
+CONFIG(debug,debug|release):revbuildhook.target = Makefile.Debug
+CONFIG(release,debug|release):revbuildhook.target = Makefile.Release
+QMAKE_EXTRA_TARGETS += revbuildhook
 
 # Enable application internationalisatio / localisation.
 #TRANSLATIONS = i18n/en.ts i18n/en_AU.ts i18n/en_GB.ts i18n/en_US.ts
