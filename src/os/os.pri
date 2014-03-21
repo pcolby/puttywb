@@ -1,5 +1,6 @@
 DEPENDPATH += $$PWD
 INCLUDEPATH += $$PWD
+VPATH += $$PWD
 
 HEADERS += abstractputtyinstance.h puttyinstance.h
 
