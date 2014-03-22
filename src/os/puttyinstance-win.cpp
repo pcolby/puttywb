@@ -32,7 +32,6 @@ PuttyInstance::PuttyInstance(const QString &command, const QString &arguments)
     startupInfo.wShowWindow = SW_HIDE; // Don't show the PuTTY window initially.
     startupInfo.dwFlags = STARTF_USESHOWWINDOW;
 
-
     // Create a new PuTTY process.
 #ifdef UNICODE
     LPTSTR args = _wcsdup(arguments.toStdWString().c_str());
