@@ -1,7 +1,5 @@
 #include "puttyinstance-win.h"
 
-#include <windows.h>
-
 PuttyInstance::PuttyInstance(const QString &command, const QString &arguments)
     : windowHandle(NULL), originalParent(NULL), originalLongPtr(0), error(NO_ERROR)
 {
@@ -74,7 +72,7 @@ bool PuttyInstance::adopt(QWidget *parent) {
         originalLongPtr = previousLongPtr;
     }
 
-    const HWND previousParent = SetParent(windowHandle, parent->winId());
+    const HWND previousParent = SetParent(windowHandle, reinterpret_cast<HWND>(parent->winId()));
     if (previousParent == NULL) {
         error = GetLastError();
         return false;

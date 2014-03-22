@@ -3,7 +3,7 @@
 
 #include "abstractputtyinstance.h"
 
-#include <windows.h>
+#include <qt_windows.h>
 
 class PuttyInstance : public AbstractPuttyInstance {
     private:

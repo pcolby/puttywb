@@ -15,9 +15,9 @@
   void msgHandler(QtMsgType type, const char *msg);
 #endif // DEBUG
 
-#define APPLICATION_NAME    QString::fromAscii("PuTTY Workbench")     // Note, these values are used by the
-#define ORGANISATION_NAME   QString::fromAscii("Paul Colby")          // QSettings default constructor, so
-#define ORGANISATION_DOMAIN QString::fromAscii("puttywb.colby.id.au") // should not change between versions.
+#define APPLICATION_NAME    QLatin1String("PuTTY Workbench") // Note, these values are used by the
+#define ORGANISATION_NAME   QLatin1String("Paul Colby")      // QSettings default constructor, so
+#define ORGANISATION_DOMAIN QLatin1String("colby.id.au")     // should not change between versions.
 
 int main(int argc, char *argv[]) {
     // Setup the primary Qt application object.
@@ -70,7 +70,7 @@ void msgHandler(QtMsgType type, const char *msg) {
             break;
     }
 	// shortcut this next line?
-    QString text=(strlen(msg)>1024) ? QString::fromAscii(msg,1024)+QLatin1String(" ...") : QString::fromUtf8(msg); // Limit text msg to no more than 1024 characters.
+    QString text=(strlen(msg)>1024) ? QString::fromUtf8(msg,1024)+QLatin1String(" ...") : QString::fromUtf8(msg); // Limit text msg to no more than 1024 characters.
     QMessageBox msgBox(icon,title,text);
     msgBox.exec();
 }

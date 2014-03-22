@@ -76,11 +76,18 @@ void PuttyWidget::timerEvent(QTimerEvent * event) {
     else QWidget::timerEvent(event); // Not one of ours.
 }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+bool PuttyWidget::nativeEvent(const QByteArray &eventType, void *message, long *result) {
+    Q_ASSERT(eventType == "windows_generic_MSG");
+    MSG * const msg = reinterpret_cast<MSG *>(message);
+#else
 bool PuttyWidget::winEvent(MSG *message, long *result) {
-    te->append(tr("win event 0x%1").arg(message->message,0,16));
-    switch (message->message) {
+    MSG * const msg = message;
+#endif
+    te->append(tr("win event 0x%1").arg(msg->message,0,16));
+    switch (msg->message) {
         case WM_PARENTNOTIFY:
-            te->append(tr("win event WM_PARENTNOTIFY %1 %2").arg(message->wParam,0,16).arg(message->lParam,0,16));
+            te->append(tr("win event WM_PARENTNOTIFY %1 %2").arg(msg->wParam,0,16).arg(msg->lParam,0,16));
             break;
         case WM_MOUSEACTIVATE:
             if (!putty->setFocus())
@@ -89,7 +96,12 @@ bool PuttyWidget::winEvent(MSG *message, long *result) {
             //return false;
             break;
     }
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    return QWidget::nativeEvent(eventType, message, result);
+#else // Qt5's nativeEvent replaced Qt4's winEvent.
     return QWidget::winEvent(message, result);
+#endif
 }
 
 /* Protected slots */

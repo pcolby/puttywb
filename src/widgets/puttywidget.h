@@ -24,7 +24,12 @@ class PuttyWidget : public QWidget {
     virtual void focusInEvent(QFocusEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
     virtual void timerEvent(QTimerEvent * event);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result);
+#else
     virtual bool winEvent(MSG *message, long *result);
+#endif
 
   protected slots:
     void checkIfPuttyIsClosed();

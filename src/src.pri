@@ -1,3 +1,4 @@
+QT += widgets
 DEPENDPATH += $$PWD
 SOURCES += main.cpp
 VPATH += $$PWD
