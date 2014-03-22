@@ -46,7 +46,7 @@ PuttyWidget::PuttyWidget(QTextEdit *te, QWidget *parent, Qt::WindowFlags flags)
         messageBox.exec();
     } else {
         // Try to adopt the PuTTY instance's window.
-        adoptPuttyWindow(); // Will schedule it's own retry if it fails.
+        QTimer::singleShot(500, this, SLOT(adoptPuttyWindow()));
     }
 
     // Set this widget's focus policy (required to receive title bar clicks).
